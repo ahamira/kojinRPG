@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   unitName: 
   visual: {fileID: 0}
-  maxHp: 0
-  attack: 0
-  defense: 0
+  maxHp: 15
+  attack: 5
+  defense: 3
   dropExp: 0
   currentLevel: 1
   currentExp: 0
-  levelTable: 
+  levelTable: 080000000f00000016000000
   hpGrowth: 3
   atkGrowth: 1

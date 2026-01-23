@@ -12,14 +12,15 @@ public class BattleManager : MonoBehaviour
     [Header("参加者")]
     public BattleUnit playerUnit;
     public GameObject enemyPrefab;
-
+    [Header("出現可能な敵のリスト")]
+    public List<UnitData> enemyDatas;
     [Header("配置・UI")]
     public Transform[] spawnPoints;  
     public RectTransform selectionArrow; 
 
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
-
+    public List<UnitData> possibleEnemies;
     void Start()
     {
         state = BattleState.Start;
@@ -34,8 +35,11 @@ public class BattleManager : MonoBehaviour
         {
             GameObject obj = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
             BattleUnit unit = obj.GetComponent<BattleUnit>();
+            int randomIndex = Random.Range(0, enemyDatas.Count);
+            unit.data = enemyDatas[randomIndex];
             unit.Setup();
             activeEnemies.Add(unit);
+            unit.gameObject.name = unit.data.unitName + " " + (char)('A' + i);
         }
 
         Debug.Log("魔物たちが あらわれた！");
