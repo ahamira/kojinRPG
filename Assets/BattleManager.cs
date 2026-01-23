@@ -6,14 +6,16 @@ public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 
 public class BattleManager : MonoBehaviour
 {
+    [Header("UI Panel")]
+    public GameObject commandPanel;
     public BattleState state;
     [Header("参加者")]
     public BattleUnit playerUnit;
     public GameObject enemyPrefab;
 
     [Header("配置・UI")]
-    public Transform[] spawnPoints;   // 敵の出現場所（3つ）
-    public RectTransform selectionArrow; // 指アイコンUI
+    public Transform[] spawnPoints;  
+    public RectTransform selectionArrow; 
 
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
@@ -27,7 +29,6 @@ public class BattleManager : MonoBehaviour
     IEnumerator SetupBattle()
     {
         playerUnit.Setup();
-        // 1~3匹の敵をランダム生成
         int count = Random.Range(1, 4);
         for (int i = 0; i < count; i++)
         {
@@ -44,6 +45,9 @@ public class BattleManager : MonoBehaviour
 
     void PlayerTurn()
     {
+        state = BattleState.PlayerTurn;
+        commandPanel.SetActive(true);
+        selectionArrow.gameObject.SetActive(true);
         state = BattleState.PlayerTurn;
         selectedEnemyIndex = 0;
         UpdateArrow();
@@ -82,12 +86,15 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.Busy;
         selectionArrow.gameObject.SetActive(false);
+        state = BattleState.Busy;
+        commandPanel.SetActive(false);
 
         BattleUnit target = activeEnemies[selectedEnemyIndex];
         Debug.Log($"{playerUnit.data.unitName}の攻撃！");
         target.TakeDamage(playerUnit.data.attack);
 
         yield return new WaitForSeconds(1f);
+
 
         if (target.isDead)
         {
@@ -113,5 +120,50 @@ public class BattleManager : MonoBehaviour
 
         if (playerUnit.isDead) { state = BattleState.Lose; Debug.Log("全滅した..."); }
         else { PlayerTurn(); }
+    }
+    
+    public void OnAttackButton()
+    {
+        if (state != BattleState.PlayerTurn) return;
+        commandPanel.SetActive(false);
+        selectionArrow.gameObject.SetActive(false);
+        StartCoroutine(PlayerAttack());
+    }
+
+    public void OnDefendButton()
+    {
+        if (state != BattleState.PlayerTurn) return;
+        StartCoroutine(PlayerDefend());
+    }
+
+    public void OnEscapeButton()
+    {
+        if (state != BattleState.PlayerTurn) return;
+        StartCoroutine(PlayerEscape());
+    }
+
+    IEnumerator PlayerDefend()
+    {
+        state = BattleState.Busy;
+        Debug.Log($"{playerUnit.data.unitName}は 身をまもっている！");
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(EnemyAttack());
+    }
+
+    IEnumerator PlayerEscape()
+    {
+        state = BattleState.Busy;
+        Debug.Log("逃げ出した！");
+        yield return new WaitForSeconds(1f);
+
+        if (Random.value > 0.2f) 
+        {
+            Debug.Log("逃げれた");
+        }
+        else
+        {
+            Debug.Log("逃げられなかった！");
+            StartCoroutine(EnemyAttack());
+        }
     }
 }
