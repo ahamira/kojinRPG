@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// --- モンスター用の基本データ ---
+// --- モンスターのデータ ---
 [CreateAssetMenu(fileName = "NewUnitData", menuName = "Battle/Enemy Data")]
 public class UnitData : ScriptableObject
 {
@@ -10,10 +10,11 @@ public class UnitData : ScriptableObject
     public int maxHp;
     public int attack;
     public int defense;
-    public int dropExp;        
+    public int dropExp;
+    public Sprite unitSprite;
 }
 
-// --- プレイヤー用の拡張データ ---
+// --- プレイヤーのデータ ---
 [CreateAssetMenu(fileName = "NewPlayerData", menuName = "Battle/Player Data")]
 public class PlayerData : UnitData
 {

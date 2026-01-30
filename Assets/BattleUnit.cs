@@ -1,18 +1,19 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 public class BattleUnit : MonoBehaviour
 {
     public UnitData data;
-    private SpriteRenderer spriteRenderer;
+    private Image unitImage;
     [HideInInspector] public int currentHp;
     [HideInInspector] public bool isDead = false;
     public bool isDefending = false;
     public void Setup()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null && data != null)
+        unitImage = GetComponent<Image>();
+        if (unitImage != null && data != null)
         {
-            spriteRenderer.sprite = data.visual;
+            unitImage.sprite = data.visual;
+            unitImage.SetNativeSize();
         }
         currentHp = data.maxHp;
         isDead = false;

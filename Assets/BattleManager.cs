@@ -16,11 +16,12 @@ public class BattleManager : MonoBehaviour
     public List<UnitData> enemyDatas;
     [Header("配置・UI")]
     public Transform[] spawnPoints;  
-    public RectTransform selectionArrow; 
-
+    public RectTransform selectionArrow;
+    public Transform enemyField;
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
     public List<UnitData> possibleEnemies;
+
     void Start()
     {
         state = BattleState.Start;
@@ -33,7 +34,7 @@ public class BattleManager : MonoBehaviour
         int count = Random.Range(1, 4);
         for (int i = 0; i < count; i++)
         {
-            GameObject obj = Instantiate(enemyPrefab, spawnPoints[i].position, Quaternion.identity);
+            GameObject obj = Instantiate(enemyPrefab, enemyField);
             BattleUnit unit = obj.GetComponent<BattleUnit>();
             int randomIndex = Random.Range(0, enemyDatas.Count);
             unit.data = enemyDatas[randomIndex];
@@ -82,8 +83,7 @@ public class BattleManager : MonoBehaviour
     void UpdateArrow()
     {
         selectionArrow.gameObject.SetActive(true);
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(activeEnemies[selectedEnemyIndex].transform.position);
-        selectionArrow.position = screenPos + new Vector3(0, 120, 0); // 敵の少し上に表示
+        selectionArrow.position = activeEnemies[selectedEnemyIndex].transform.position + new Vector3(0, 150, 0);
     }
 
     IEnumerator PlayerAttack()
