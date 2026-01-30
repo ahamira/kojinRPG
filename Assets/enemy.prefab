@@ -89,6 +89,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41a6207119b8f2f44a3aedccc2f44363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageTextPrefab: {fileID: 345502754910724058, guid: 0cbd6cb90bb22d14c95ac87442d66a21,
+    type: 3}
   data: {fileID: 11400000, guid: fb0ae519a78b1a04488fbca02e61879f, type: 2}
   currentHp: 0
   isDead: 0

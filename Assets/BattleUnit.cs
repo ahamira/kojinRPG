@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class BattleUnit : MonoBehaviour
 {
+    public GameObject damageTextPrefab;
     public UnitData data;
     private Image unitImage;
     [HideInInspector] public int currentHp;
@@ -9,7 +10,7 @@ public class BattleUnit : MonoBehaviour
     public bool isDefending = false;
     public void Setup()
     {
-        unitImage = GetComponent<Image>();
+        if (unitImage == null) unitImage = GetComponent<Image>();
         if (unitImage != null && data != null)
         {
             unitImage.sprite = data.visual;
@@ -30,6 +31,15 @@ public class BattleUnit : MonoBehaviour
             if (damage <= 0) damage = 1;
 
         currentHp -= damage;
+       
+        if (damageTextPrefab != null)
+        {
+            GameObject popup = Instantiate(damageTextPrefab, transform.position, Quaternion.identity, transform.parent.parent);
+            if (popup.TryGetComponent<DamagePopup>(out var popupScript))
+            {
+                popupScript.Setup(damage);
+            }
+        }
         if (currentHp <= 0)
         {
             currentHp = 0;

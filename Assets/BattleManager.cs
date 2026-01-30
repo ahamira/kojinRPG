@@ -1,11 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.UI;
+using TMPro;
 public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 
 public class BattleManager : MonoBehaviour
 {
+    [Header("Player UI")]
+    public TextMeshProUGUI playerNameText;
+    public TextMeshProUGUI playerHPText;
+    public Slider hpSlider;
     [Header("UI Panel")]
     public GameObject commandPanel;
     public BattleState state;
@@ -31,9 +36,12 @@ public class BattleManager : MonoBehaviour
     IEnumerator SetupBattle()
     {
         playerUnit.Setup();
+        UpdatePlayerUI();
         int count = Random.Range(1, 4);
         for (int i = 0; i < count; i++)
         {
+            playerUnit.Setup();
+            UpdatePlayerUI();
             GameObject obj = Instantiate(enemyPrefab, enemyField);
             BattleUnit unit = obj.GetComponent<BattleUnit>();
             int randomIndex = Random.Range(0, enemyDatas.Count);
@@ -47,7 +55,28 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         PlayerTurn();
     }
+    void UpdatePlayerUI()
+    {
+        playerNameText.text = playerUnit.data.unitName;
+        playerHPText.text = $"HP {playerUnit.currentHp} / {playerUnit.data.maxHp}";
+        hpSlider.maxValue = playerUnit.data.maxHp;
+        hpSlider.value = playerUnit.currentHp;
+        Image fillImage = hpSlider.fillRect.GetComponent<Image>();
+        float hpPercent = (float)playerUnit.currentHp / playerUnit.data.maxHp;
 
+        if (hpPercent <= 0.2f)
+        {
+            fillImage.color = Color.red;   
+        }
+        else if (hpPercent <= 0.5f)
+        {
+            fillImage.color = Color.yellow;
+        }
+        else
+        {
+            fillImage.color = Color.green;  
+        }
+    }
     void PlayerTurn()
     {
         state = BattleState.PlayerTurn;
@@ -56,21 +85,23 @@ public class BattleManager : MonoBehaviour
         state = BattleState.PlayerTurn;
         selectedEnemyIndex = 0;
         UpdateArrow();
-        Debug.Log("どうする？ (左右で選択、Spaceで攻撃)");
+        Debug.Log("どうする？");
     }
 
     void Update()
     {
         if (state != BattleState.PlayerTurn) return;
 
-        // ターゲット選択
         if (Input.GetKeyDown(KeyCode.RightArrow)) { ChangeTarget(1); }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) { ChangeTarget(-1); }
 
-        // 決定
         if (Input.GetKeyDown(KeyCode.Space))
         {
             StartCoroutine(PlayerAttack());
+        }
+        if (hpSlider != null)
+        {
+            hpSlider.value = Mathf.Lerp(hpSlider.value, playerUnit.currentHp, Time.deltaTime * 5f);
         }
     }
 
@@ -118,6 +149,7 @@ public class BattleManager : MonoBehaviour
         {
             Debug.Log($"{enemy.data.unitName}の攻撃！");
             playerUnit.TakeDamage(enemy.data.attack);
+            UpdatePlayerUI();
             yield return new WaitForSeconds(1f);
             if (playerUnit.isDead) break;
         }

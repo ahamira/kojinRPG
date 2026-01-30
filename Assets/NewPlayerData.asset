@@ -15,9 +15,10 @@ MonoBehaviour:
   unitName: 
   visual: {fileID: 0}
   maxHp: 15
-  attack: 5
+  attack: 8
   defense: 3
   dropExp: 0
+  unitSprite: {fileID: 0}
   currentLevel: 1
   currentExp: 0
   levelTable: 080000000f00000016000000
