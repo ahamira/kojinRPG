@@ -26,11 +26,12 @@ public class BattleManager : MonoBehaviour
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
     public List<UnitData> possibleEnemies;
-
+    public GameObject battleUI;
     void Start()
     {
         state = BattleState.Start;
         StartCoroutine(SetupBattle());
+        battleUI.SetActive(false);
     }
 
     IEnumerator SetupBattle()
@@ -77,6 +78,11 @@ public class BattleManager : MonoBehaviour
             fillImage.color = Color.green;  
         }
     }
+    public void EncounterEnemy()
+    {
+        battleUI.SetActive(true); 
+        StartCoroutine(SetupBattle());
+    }
     void PlayerTurn()
     {
         state = BattleState.PlayerTurn;
@@ -91,7 +97,7 @@ public class BattleManager : MonoBehaviour
     void Update()
     {
         if (state != BattleState.PlayerTurn) return;
-
+        battleUI.SetActive(false);
         if (Input.GetKeyDown(KeyCode.RightArrow)) { ChangeTarget(1); }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) { ChangeTarget(-1); }
 
@@ -201,5 +207,9 @@ public class BattleManager : MonoBehaviour
             Debug.Log("ì¶Ç∞ÇÁÇÍÇ»Ç©Ç¡ÇΩÅI");
             StartCoroutine(EnemyAttack());
         }
+    }
+    public void EndBattle()
+    {
+        battleUI.SetActive(false);
     }
 }
