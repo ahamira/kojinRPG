@@ -27,6 +27,8 @@ public class BattleManager : MonoBehaviour
     private int selectedEnemyIndex = 0;
     public List<UnitData> possibleEnemies;
     public GameObject battleUI;
+    [Header("UI Groups")]
+    public CanvasGroup battleCanvasGroup;
     void Start()
     {
         state = BattleState.Start;
@@ -41,7 +43,6 @@ public class BattleManager : MonoBehaviour
         int count = Random.Range(1, 4);
         for (int i = 0; i < count; i++)
         {
-            playerUnit.Setup();
             UpdatePlayerUI();
             GameObject obj = Instantiate(enemyPrefab, enemyField);
             BattleUnit unit = obj.GetComponent<BattleUnit>();
@@ -97,7 +98,6 @@ public class BattleManager : MonoBehaviour
     void Update()
     {
         if (state != BattleState.PlayerTurn) return;
-        battleUI.SetActive(false);
         if (Input.GetKeyDown(KeyCode.RightArrow)) { ChangeTarget(1); }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) { ChangeTarget(-1); }
 
