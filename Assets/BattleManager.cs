@@ -81,7 +81,12 @@ public class BattleManager : MonoBehaviour
     }
     public void EncounterEnemy()
     {
-        battleUI.SetActive(true); 
+        battleUI.SetActive(true);
+       if (playerUnit != null)
+       {
+                idou moveScript = playerUnit.GetComponent<idou>();
+                if (moveScript != null) moveScript.enabled = false;
+       }
         StartCoroutine(SetupBattle());
     }
     void PlayerTurn()
@@ -211,5 +216,9 @@ public class BattleManager : MonoBehaviour
     public void EndBattle()
     {
         battleUI.SetActive(false);
+        idou playerMovement = playerUnit.GetComponent<idou>();
+        if (playerMovement != null) playerMovement.enabled = true;
+
+        state = BattleState.Busy;
     }
 }

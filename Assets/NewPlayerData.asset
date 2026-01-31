@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: 
   visual: {fileID: 0}
   maxHp: 15
-  attack: 8
+  attack: 100
   defense: 3
   dropExp: 0
   unitSprite: {fileID: 0}

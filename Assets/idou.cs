@@ -15,9 +15,12 @@ public class idou : MonoBehaviour
     void Update()
     {
         if (!canEncounter) return;
-
+        BattleManager bm = FindObjectOfType<BattleManager>();
         float distanceMoved = Vector3.Distance(transform.position, lastPosition);
-
+        if (bm != null && bm.battleUI.activeSelf) 
+    {
+        return; 
+    }
         if (distanceMoved > 0)
         {
             currentEncounterMeter += distanceMoved * Random.Range(0.5f, 1.5f);
@@ -38,6 +41,13 @@ public class idou : MonoBehaviour
         {
             bm.EncounterEnemy();
         }
-
+    }
+    void OnDisable()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero; 
+        }
     }
 }
