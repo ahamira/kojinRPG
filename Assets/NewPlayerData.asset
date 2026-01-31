@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   unitName: 
   visual: {fileID: 0}
-  maxHp: 15
+  maxHp: 20
   attack: 100
   defense: 3
-  dropExp: 0
+  exp: 0
   unitSprite: {fileID: 0}
   currentLevel: 1
   currentExp: 0

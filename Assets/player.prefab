@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 895.3975, y: 814.5141}
+  m_AnchoredPosition: {x: 970.3975, y: 814.5141}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3406274511814094223
@@ -90,6 +90,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageTextPrefab: {fileID: 0}
   data: {fileID: 11400000, guid: 28af0ec4f817dd943ba03b21fdc4a43b, type: 2}
-  currentHp: 0
-  isDead: 1
+  currentHp: 5
+  isDead: 0
   isDefending: 0

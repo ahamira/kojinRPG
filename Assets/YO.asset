@@ -17,5 +17,5 @@ MonoBehaviour:
   maxHp: 8
   attack: 3
   defense: 1
-  dropExp: 4
+  exp: 0
   unitSprite: {fileID: 0}
