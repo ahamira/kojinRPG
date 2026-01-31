@@ -8,6 +8,7 @@ public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 
 public class BattleManager : MonoBehaviour
 {
+    private int totalExpGained = 0;
     [Header("Player UI")]
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI playerHPText;
@@ -39,6 +40,7 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator SetupBattle()
     {
+        totalExpGained = 0;
         playerUnit.Setup();
         UpdatePlayerUI();
         int count = Random.Range(1, 4);
@@ -150,7 +152,6 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.Busy;
         selectionArrow.gameObject.SetActive(false);
-        state = BattleState.Busy;
         commandPanel.SetActive(false);
 
         BattleUnit target = activeEnemies[selectedEnemyIndex];
@@ -165,11 +166,15 @@ public class BattleManager : MonoBehaviour
             Debug.Log($"{target.data.unitName}を たおした！");
             Destroy(target.gameObject);
             activeEnemies.Remove(target);
+            totalExpGained += target.data.exp;
         }
 
         if (activeEnemies.Count <= 0)
         { 
-            state = BattleState.Win; Debug.Log("戦いに勝利した！");
+            state = BattleState.Win;
+            Debug.Log($"ta\\戦いに勝利した！合計 {totalExpGained} EXP 獲得！");
+            PlayerStatus status = playerUnit.GetComponent<PlayerStatus>();
+            if (status != null) status.GainExp(totalExpGained);
             yield return new WaitForSeconds(1.5f);
             EndBattle();
         }

@@ -10,7 +10,7 @@ public class UnitData : ScriptableObject
     public int maxHp;
     public int attack;
     public int defense;
-    public int dropExp;
+    public int exp;
     public Sprite unitSprite;
 }
 
