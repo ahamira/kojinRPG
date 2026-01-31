@@ -44,10 +44,20 @@ public class idou : MonoBehaviour
     }
     void OnDisable()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.linearVelocity = Vector3.zero; 
+            rb.linearVelocity = Vector2.zero;
         }
+        Animator anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetFloat("Speed", 0);
+        }
+    }
+    public void WarpReset()
+    {
+        lastPosition = transform.position;
+        currentEncounterMeter = 0; 
     }
 }

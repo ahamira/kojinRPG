@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using Cainos.PixelArtTopDown_Basic;
 public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 
 public class BattleManager : MonoBehaviour
@@ -82,11 +83,28 @@ public class BattleManager : MonoBehaviour
     public void EncounterEnemy()
     {
         battleUI.SetActive(true);
+
        if (playerUnit != null)
        {
-                idou moveScript = playerUnit.GetComponent<idou>();
-                if (moveScript != null) moveScript.enabled = false;
-       }
+            TopDownCharacterController[] moveScripts = FindObjectsOfType<TopDownCharacterController>();
+            foreach (var script in moveScripts)
+            {
+                script.enabled = false;
+                if (script.TryGetComponent<Rigidbody2D>(out var rb))
+                {
+                    rb.linearVelocity = Vector2.zero;
+                }
+                if (script.TryGetComponent<Animator>(out var anim))
+                {
+                    anim.SetBool("IsMoving", false);
+                }
+            }
+            idou[] encounterScripts = FindObjectsOfType<idou>();
+            foreach (var script in encounterScripts)
+            {
+                script.enabled = false;
+            }
+        }
         StartCoroutine(SetupBattle());
     }
     void PlayerTurn()
@@ -149,8 +167,14 @@ public class BattleManager : MonoBehaviour
             activeEnemies.Remove(target);
         }
 
-        if (activeEnemies.Count <= 0) { state = BattleState.Win; Debug.Log("í‚¢‚ÉŸ—˜‚µ‚½I"); }
+        if (activeEnemies.Count <= 0)
+        { 
+            state = BattleState.Win; Debug.Log("í‚¢‚ÉŸ—˜‚µ‚½I");
+            yield return new WaitForSeconds(1.5f);
+            EndBattle();
+        }
         else { StartCoroutine(EnemyAttack()); }
+
     }
 
     IEnumerator EnemyAttack()
@@ -206,6 +230,7 @@ public class BattleManager : MonoBehaviour
         if (Random.value > 0.2f) 
         {
             Debug.Log("“¦‚°‚ê‚½");
+            EndBattle();
         }
         else
         {
@@ -216,9 +241,34 @@ public class BattleManager : MonoBehaviour
     public void EndBattle()
     {
         battleUI.SetActive(false);
-        idou playerMovement = playerUnit.GetComponent<idou>();
-        if (playerMovement != null) playerMovement.enabled = true;
+        TopDownCharacterController[] moveScripts = FindObjectsOfType<TopDownCharacterController>();
+        foreach (var script in moveScripts)
+        {
+            script.enabled = true;
+        }
 
-        state = BattleState.Busy;
+        idou[] encounterScripts = FindObjectsOfType<idou>();
+        foreach (var script in encounterScripts)
+        {
+            script.enabled = true;
+            script.WarpReset();
+        }
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy != null) Destroy(enemy.gameObject);
+        }
+        activeEnemies.Clear();
+        if (playerUnit != null)
+        {
+            var moveScript = playerUnit.GetComponent<TopDownCharacterController>();
+            var idouScript = playerUnit.GetComponent<idou>();
+
+            if (moveScript != null) moveScript.enabled = true;
+            if (idouScript != null)
+            {
+                idouScript.enabled = true;
+                idouScript.WarpReset(); 
+            }
+        }
     }
 }
