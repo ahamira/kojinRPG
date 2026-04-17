@@ -112,6 +112,7 @@ public class BattleManager : MonoBehaviour
     void PlayerTurn()
     {
         state = BattleState.PlayerTurn;
+        playerUnit.isDefending = false;
         commandPanel.SetActive(true);
         selectionArrow.gameObject.SetActive(true);
         state = BattleState.PlayerTurn;
@@ -221,6 +222,8 @@ public class BattleManager : MonoBehaviour
     IEnumerator PlayerDefend()
     {
         state = BattleState.Busy;
+        commandPanel.SetActive(false); 
+        playerUnit.isDefending = true;
         Debug.Log($"{playerUnit.data.unitName}は 身をまもっている！");
         yield return new WaitForSeconds(1f);
         StartCoroutine(EnemyAttack());
@@ -232,7 +235,7 @@ public class BattleManager : MonoBehaviour
         Debug.Log("逃げ出した！");
         yield return new WaitForSeconds(1f);
 
-        if (Random.value > 0.2f) 
+        if (Random.value > 0.5f) 
         {
             Debug.Log("逃げれた");
             EndBattle();

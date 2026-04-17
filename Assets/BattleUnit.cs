@@ -28,10 +28,10 @@ public class BattleUnit : MonoBehaviour
             damage /= 2;
             isDefending = false;
         }
-            if (damage <= 0) damage = 1;
+        if (damage <= 0) damage = 1;
 
         currentHp -= damage;
-       
+
         if (damageTextPrefab != null)
         {
             GameObject popup = Instantiate(damageTextPrefab, transform.position, Quaternion.identity, transform.parent.parent);
@@ -45,6 +45,13 @@ public class BattleUnit : MonoBehaviour
             currentHp = 0;
             isDead = true;
         }
-    }
+        int finalDamage = isDefending ? damage / 2 : damage;
 
+        currentHp -= finalDamage;
+        if (currentHp <= 0)
+        {
+            currentHp = 0;
+            isDead = true;
+        }
+    }
 }
