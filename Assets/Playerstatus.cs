@@ -15,6 +15,7 @@ public class PlayerStatus : MonoBehaviour
 
         while (currentExp >= nextLevelExp)
         {
+            Debug.Log("GainExp‚ªŒÄ‚Î‚ê‚Ü‚µ‚½B‰ÁZ—Ê: " + amount);
             LevelUp();
         }
     }

@@ -173,6 +173,7 @@ public class BattleManager : MonoBehaviour
         if (activeEnemies.Count <= 0)
         { 
             state = BattleState.Win;
+
             Debug.Log($"ta\\戦いに勝利した！合計 {totalExpGained} EXP 獲得！");
             PlayerStatus status = playerUnit.GetComponent<PlayerStatus>();
             if (status != null) status.GainExp(totalExpGained);
@@ -180,7 +181,7 @@ public class BattleManager : MonoBehaviour
             EndBattle();
         }
         else { StartCoroutine(EnemyAttack()); }
-
+        Debug.LogError($"{playerUnit.name} に PlayerStatus がアタッチされていません！");
     }
 
     IEnumerator EnemyAttack()
