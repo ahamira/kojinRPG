@@ -26,7 +26,6 @@ public class BattleUnit : MonoBehaviour
         if (isDefending)
         {
             damage /= 2;
-            isDefending = false;
         }
         if (damage <= 0) damage = 1;
 
@@ -45,9 +44,7 @@ public class BattleUnit : MonoBehaviour
             currentHp = 0;
             isDead = true;
         }
-        int finalDamage = isDefending ? damage / 2 : damage;
-
-        currentHp -= finalDamage;
+        
         if (currentHp <= 0)
         {
             currentHp = 0;

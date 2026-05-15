@@ -4,8 +4,10 @@ public class PlayerStatus : MonoBehaviour
 {
     public int level = 1;
     public int currentExp = 0;
-    public int nextLevelExp = 10; 
+    public int nextLevelExp = 10;
 
+    public int bonusHp = 0;
+    public int bonusAtk = 0;
     public void GainExp(int amount)
     {
         currentExp += amount;
@@ -21,12 +23,13 @@ public class PlayerStatus : MonoBehaviour
     {
         currentExp -= nextLevelExp;
         level++;
-        nextLevelExp = Mathf.RoundToInt(nextLevelExp * 1.5f);
+        nextLevelExp = Mathf.RoundToInt(nextLevelExp * 1.5f); 
+
+        bonusHp += 10;
+        bonusAtk += 2;
 
         BattleUnit unit = GetComponent<BattleUnit>();
-        unit.data.maxHp += 10;
         unit.currentHp = unit.data.maxHp; 
-        unit.data.attack += 2;
 
         Debug.Log($"レベルアップ！ Level {level} になった！");
     }
