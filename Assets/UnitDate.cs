@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// --- モンスターのデータ ---
+// --- モンスターのベースデータ ---
 [CreateAssetMenu(fileName = "NewUnitData", menuName = "Battle/Enemy Data")]
 public class UnitData : ScriptableObject
 {
     public string unitName;
-    public Sprite visual;     
+    public Sprite visual;
     public int maxHp;
     public int attack;
     public int defense;
@@ -14,20 +14,15 @@ public class UnitData : ScriptableObject
     public Sprite unitSprite;
 }
 
-// --- プレイヤーのデータ ---
+// --- プレイヤーのデータ（UnitDataを継承） ---
 [CreateAssetMenu(fileName = "NewPlayerData", menuName = "Battle/Player Data")]
 public class PlayerData : UnitData
 {
-    [Header("成長の設定")]
-    public int currentLevel = 1;
-    public int currentExp = 0;
+    [Header("成長の設定（レベルごとの必要【累計】経験値リスト）")]
     public List<int> levelTable;
-    public int hpGrowth = 3;     
-    public int atkGrowth = 1;  
 
-    public bool CanLevelUp()
-    {
-        if (currentLevel >= levelTable.Count) return false;
-        return currentExp >= levelTable[currentLevel];
-    }
+    [Header("1レベルあたりの成長量")]
+    public int hpGrowth = 3;
+    public int atkGrowth = 1;
+    public int defGrowth = 1;
 }

@@ -181,7 +181,6 @@ public class BattleManager : MonoBehaviour
             EndBattle();
         }
         else { StartCoroutine(EnemyAttack()); }
-        Debug.LogError($"{playerUnit.name} に PlayerStatus がアタッチされていません！");
     }
 
     IEnumerator EnemyAttack()
