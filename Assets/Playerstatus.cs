@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStatus : MonoBehaviour
+public class Playerstatus : MonoBehaviour
 {
     [Header("プレイヤーのマスターデータ")]
     public PlayerData playerData;
@@ -8,6 +8,7 @@ public class PlayerStatus : MonoBehaviour
     [Header("現在のステータス（ゲーム中に変動する値）")]
     public int level = 1;
     public int currentExp = 0;
+    public int currentHp = 0;
 
     private int bonusHp = 0;
     private int bonusAtk = 0;
@@ -37,6 +38,8 @@ public class PlayerStatus : MonoBehaviour
 
     void Start()
     {
+        if (currentHp <= 0) currentHp = MaxHp;
+        if (battleUnit != null) battleUnit.currentHp = currentHp;
         if (battleUnit != null)
         {
             battleUnit.currentHp = MaxHp;
@@ -80,6 +83,7 @@ public class PlayerStatus : MonoBehaviour
             bonusDef += playerData.defGrowth;
         }
 
+        currentHp = MaxHp;
         // 増えた最大HPに合わせて、現在のHPも全回復
         if (battleUnit != null)
         {

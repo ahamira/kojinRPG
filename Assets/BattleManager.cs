@@ -175,8 +175,10 @@ public class BattleManager : MonoBehaviour
             state = BattleState.Win;
 
             Debug.Log($"ta\\í‚¢‚ÉŸ—˜‚µ‚½I‡Œv {totalExpGained} EXP Šl“¾I");
-            PlayerStatus status = playerUnit.GetComponent<PlayerStatus>();
+
+            Playerstatus status = playerUnit.GetComponent<Playerstatus>();
             if (status != null) status.GainExp(totalExpGained);
+
             yield return new WaitForSeconds(1.5f);
             EndBattle();
         }
@@ -248,6 +250,11 @@ public class BattleManager : MonoBehaviour
     }
     public void EndBattle()
     {
+        if (playerUnit != null)
+        {
+            Playerstatus status = playerUnit.GetComponent<Playerstatus>();
+            if (status != null) status.currentHp = playerUnit.currentHp;
+        }
         battleUI.SetActive(false);
         TopDownCharacterController[] moveScripts = FindObjectsOfType<TopDownCharacterController>();
         foreach (var script in moveScripts)

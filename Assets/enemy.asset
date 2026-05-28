@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: poyon
   visual: {fileID: -1791387956, guid: 032beef69f3fab94c8892647b499d93a, type: 3}
-  maxHp: 5
-  attack: 20
+  maxHp: 60
+  attack: 5
   defense: 0
   exp: 10
   unitSprite: {fileID: 0}

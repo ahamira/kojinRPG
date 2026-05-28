@@ -16,8 +16,17 @@ public class BattleUnit : MonoBehaviour
             unitImage.sprite = data.visual;
             unitImage.SetNativeSize();
         }
-        currentHp = data.maxHp;
+
+        Playerstatus status = GetComponent<Playerstatus>();
         isDead = false;
+        if (status != null)
+        {
+            currentHp = status.currentHp;
+        }
+        else if (data != null)
+        {
+            currentHp = data.maxHp;
+        }
     }
 
     public void TakeDamage(int attackerAtk)
