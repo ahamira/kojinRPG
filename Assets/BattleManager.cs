@@ -301,5 +301,10 @@ public class BattleManager : MonoBehaviour
                 idouScript.WarpReset(); 
             }
         }
+        FieldUIManager fieldUI = FindObjectOfType<FieldUIManager>();
+        if (fieldUI != null)
+        {
+            fieldUI.UpdateFieldUI();
+        }
     }
 }

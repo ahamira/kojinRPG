@@ -19,7 +19,7 @@ MonoBehaviour:
   defense: 3
   exp: 0
   unitSprite: {fileID: 0}
-  levelTable: 080000000f00000016000000
+  levelTable: 0a000000280000005a000000a0000000fa00000068010000ea010000800200002a030000e8030000ba040000
   hpGrowth: 3
   atkGrowth: 1
   defGrowth: 1
