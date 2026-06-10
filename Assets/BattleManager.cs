@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
     public GameObject commandPanel;
     public BattleState state;
     [Header("参加者")]
+    public Playerstatus fieldPlayerStatus;
     public BattleUnit playerUnit;
     public GameObject enemyPrefab;
     [Header("出現可能な敵のリスト")]
@@ -41,6 +42,10 @@ public class BattleManager : MonoBehaviour
     IEnumerator SetupBattle()
     {
         totalExpGained = 0;
+        if (fieldPlayerStatus != null)
+        {
+            playerUnit.currentHp = fieldPlayerStatus.currentHp;
+        }
         playerUnit.Setup();
         UpdatePlayerUI();
         int count = Random.Range(1, 4);
@@ -250,6 +255,11 @@ public class BattleManager : MonoBehaviour
     }
     public void EndBattle()
     {
+        if (fieldPlayerStatus != null && playerUnit != null)
+        {
+            fieldPlayerStatus.currentHp = playerUnit.currentHp;
+        }
+        battleUI.SetActive(false);
         if (playerUnit != null)
         {
             Playerstatus status = playerUnit.GetComponent<Playerstatus>();

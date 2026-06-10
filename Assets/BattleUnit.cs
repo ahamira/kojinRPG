@@ -17,8 +17,14 @@ public class BattleUnit : MonoBehaviour
             unitImage.SetNativeSize();
         }
 
-        Playerstatus status = GetComponent<Playerstatus>();
         isDead = false;
+
+        {
+            return;
+        }
+
+        Playerstatus status = GetComponent<Playerstatus>();
+
         if (status != null)
         {
             currentHp = status.currentHp;

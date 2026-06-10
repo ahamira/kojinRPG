@@ -12,15 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: NewPlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
-  unitName: 
+  unitName: ai
   visual: {fileID: 0}
   maxHp: 50
   attack: 100
   defense: 3
   exp: 0
   unitSprite: {fileID: 0}
-  currentLevel: 1
-  currentExp: 0
   levelTable: 080000000f00000016000000
   hpGrowth: 3
   atkGrowth: 1
+  defGrowth: 1
