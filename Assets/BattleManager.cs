@@ -181,8 +181,14 @@ public class BattleManager : MonoBehaviour
 
             Debug.Log($"ta\\戦いに勝利した！合計 {totalExpGained} EXP 獲得！");
 
-            Playerstatus status = playerUnit.GetComponent<Playerstatus>();
-            if (status != null) status.GainExp(totalExpGained);
+            if (fieldPlayerStatus != null)
+            {
+                fieldPlayerStatus.GainExp(totalExpGained);
+            }
+            else
+            {
+                Debug.LogWarning("fieldPlayerStatus が BattleManager に設定されていません！");
+            }
 
             yield return new WaitForSeconds(1.5f);
             EndBattle();
