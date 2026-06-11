@@ -2,25 +2,37 @@ using UnityEngine;
 
 public class idou : MonoBehaviour
 {
+    [Header("エンカウントするまでの必要歩数（距離）")]
     public float encounterThreshold = 5f; 
     private float currentEncounterMeter = 0f;
 
     private Vector3 lastPosition;
-    public bool canEncounter = true; 
+    public bool canEncounter = true;
+
+    private BattleManager battleManager;
+
     void Start()
     {
+        battleManager = FindObjectOfType<BattleManager>();
         lastPosition = transform.position;
+    }
+
+    void OnEnable()
+    {
+        WarpReset();
     }
 
     void Update()
     {
         if (!canEncounter) return;
-        BattleManager bm = FindObjectOfType<BattleManager>();
+
+        if (battleManager != null && battleManager.battleUI.activeSelf)
+        {
+            return;
+        }
+
         float distanceMoved = Vector3.Distance(transform.position, lastPosition);
-        if (bm != null && bm.battleUI.activeSelf) 
-    {
-        return; 
-    }
+
         if (distanceMoved > 0)
         {
             currentEncounterMeter += distanceMoved * Random.Range(0.5f, 1.5f);
@@ -36,12 +48,12 @@ public class idou : MonoBehaviour
     void StartBattle()
     {
         currentEncounterMeter = 0;
-        BattleManager bm = FindObjectOfType<BattleManager>();
-        if (bm != null)
+        if (battleManager != null)
         {
-            bm.EncounterEnemy();
+            battleManager.EncounterEnemy();
         }
     }
+
     void OnDisable()
     {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -49,15 +61,17 @@ public class idou : MonoBehaviour
         {
             rb.linearVelocity = Vector2.zero;
         }
+
         Animator anim = GetComponent<Animator>();
         if (anim != null)
         {
-            anim.SetFloat("Speed", 0);
+            anim.SetBool("IsMoving", false);
         }
     }
+
     public void WarpReset()
     {
         lastPosition = transform.position;
-        currentEncounterMeter = 0; 
+        currentEncounterMeter = 0f;
     }
 }

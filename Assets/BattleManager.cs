@@ -32,6 +32,8 @@ public class BattleManager : MonoBehaviour
     public GameObject battleUI;
     [Header("UI Groups")]
     public CanvasGroup battleCanvasGroup;
+    [Header("フィールドUIのマネージャー")]
+public FieldUIManager fieldUIManager;
     void Start()
     {
         state = BattleState.Start;

@@ -59,11 +59,6 @@ public class BattleUnit : MonoBehaviour
             currentHp = 0;
             isDead = true;
         }
-        
-        if (currentHp <= 0)
-        {
-            currentHp = 0;
-            isDead = true;
-        }
+
     }
 }
