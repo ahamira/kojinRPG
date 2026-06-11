@@ -4,198 +4,272 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
 using Cainos.PixelArtTopDown_Basic;
+
 public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 
 public class BattleManager : MonoBehaviour
 {
     private int totalExpGained = 0;
+
     [Header("Player UI")]
     public TextMeshProUGUI playerNameText;
     public TextMeshProUGUI playerHPText;
     public Slider hpSlider;
+
     [Header("UI Panel")]
     public GameObject commandPanel;
     public BattleState state;
+
     [Header("参加者")]
-    public Playerstatus fieldPlayerStatus;
-    public BattleUnit playerUnit;
+    public Playerstatus fieldPlayerStatus; // 本体のセーブデータ
+    public BattleUnit playerUnit;          // バトル用の臨時の体
     public GameObject enemyPrefab;
+
     [Header("出現可能な敵のリスト")]
     public List<UnitData> enemyDatas;
+
     [Header("配置・UI")]
-    public Transform[] spawnPoints;  
+    public Transform[] spawnPoints;
     public RectTransform selectionArrow;
     public Transform enemyField;
+
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
     public List<UnitData> possibleEnemies;
     public GameObject battleUI;
+
     [Header("UI Groups")]
     public CanvasGroup battleCanvasGroup;
+
     [Header("フィールドUIのマネージャー")]
-public FieldUIManager fieldUIManager;
+    public FieldUIManager fieldUIManager;
+
     void Start()
     {
         state = BattleState.Start;
+        if (battleUI != null) battleUI.SetActive(false); // 最初はバトルUIを確実に隠す
+    }
+
+    // 敵と遭遇した（すべての起点の処理）
+    public void EncounterEnemy()
+    {
+        // ★まず真っ先にUIを表示する（これで行き倒れを防ぐ）
+        if (battleUI != null) battleUI.SetActive(true);
+
+        // 【大修正】エラーで処理が止まらないよう、1つずつ安全にコンポーネントをチェック
+        TopDownCharacterController[] moveScripts = Object.FindObjectsByType<TopDownCharacterController>(FindObjectsSortMode.None);
+        foreach (var script in moveScripts)
+        {
+            if (script == null) continue;
+            script.enabled = false;
+
+            // Rigidbody2Dが本当に付いているか確認してから速度をゼロにする
+            if (script.TryGetComponent<Rigidbody2D>(out var rb))
+            {
+                rb.linearVelocity = Vector2.zero;
+            }
+            // Animatorが本当に付いているか確認してからアニメーションを止める
+            if (script.TryGetComponent<Animator>(out var anim))
+            {
+                anim.SetBool("IsMoving", false);
+            }
+        }
+
+        idou[] encounterScripts = Object.FindObjectsByType<idou>(FindObjectsSortMode.None);
+        foreach (var script in encounterScripts)
+        {
+            if (script != null) script.enabled = false;
+        }
+
+        // 安全にバトル生成コルーチンを開始
         StartCoroutine(SetupBattle());
-        battleUI.SetActive(false);
     }
 
     IEnumerator SetupBattle()
     {
         totalExpGained = 0;
-        if (fieldPlayerStatus != null)
+        selectedEnemyIndex = 0;
+
+        // 前回の敵の残骸を安全に削除
+        if (activeEnemies != null && activeEnemies.Count > 0)
+        {
+            for (int i = activeEnemies.Count - 1; i >= 0; i--)
+            {
+                if (activeEnemies[i] != null)
+                {
+                    Destroy(activeEnemies[i].gameObject);
+                }
+            }
+            activeEnemies.Clear();
+        }
+
+        // バトル開始時に本体のHPをバトルの体にコピー
+        if (fieldPlayerStatus != null && playerUnit != null)
         {
             playerUnit.currentHp = fieldPlayerStatus.currentHp;
         }
-        playerUnit.Setup();
+
+        if (playerUnit != null) playerUnit.Setup();
         UpdatePlayerUI();
-        int count = Random.Range(1, 4);
-        for (int i = 0; i < count; i++)
+
+        // 敵のランダム生成
+        if (enemyPrefab != null && enemyDatas != null && enemyDatas.Count > 0)
         {
-            UpdatePlayerUI();
-            GameObject obj = Instantiate(enemyPrefab, enemyField);
-            BattleUnit unit = obj.GetComponent<BattleUnit>();
-            int randomIndex = Random.Range(0, enemyDatas.Count);
-            unit.data = enemyDatas[randomIndex];
-            unit.Setup();
-            activeEnemies.Add(unit);
-            unit.gameObject.name = unit.data.unitName + " " + (char)('A' + i);
+            int count = Random.Range(1, 4);
+            for (int i = 0; i < count; i++)
+            {
+                GameObject obj = Instantiate(enemyPrefab, enemyField);
+
+                if (spawnPoints != null && spawnPoints.Length > i && spawnPoints[i] != null)
+                {
+                    obj.transform.position = spawnPoints[i].position;
+                }
+
+                BattleUnit unit = obj.GetComponent<BattleUnit>();
+                if (unit != null)
+                {
+                    int randomIndex = Random.Range(0, enemyDatas.Count);
+                    unit.data = enemyDatas[randomIndex];
+                    unit.Setup();
+                    activeEnemies.Add(unit);
+                    unit.gameObject.name = unit.data.unitName + " " + (char)('A' + i);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("BattleManagerの EnemyPrefab または EnemyDatas がインスペクターで空っぽです！");
         }
 
+        // ★これでログもUIも絶対に止まらずに動きます！
         Debug.Log("魔物たちが あらわれた！");
         yield return new WaitForSeconds(1f);
         PlayerTurn();
     }
+
     void UpdatePlayerUI()
     {
-        playerNameText.text = playerUnit.data.unitName;
-        playerHPText.text = $"HP {playerUnit.currentHp} / {playerUnit.data.maxHp}";
-        hpSlider.maxValue = playerUnit.data.maxHp;
-        hpSlider.value = playerUnit.currentHp;
-        Image fillImage = hpSlider.fillRect.GetComponent<Image>();
-        float hpPercent = (float)playerUnit.currentHp / playerUnit.data.maxHp;
+        if (playerUnit == null || playerUnit.data == null) return;
 
-        if (hpPercent <= 0.2f)
-        {
-            fillImage.color = Color.red;   
-        }
-        else if (hpPercent <= 0.5f)
-        {
-            fillImage.color = Color.yellow;
-        }
-        else
-        {
-            fillImage.color = Color.green;  
-        }
-    }
-    public void EncounterEnemy()
-    {
-        battleUI.SetActive(true);
+        int maxHp = (fieldPlayerStatus != null) ? fieldPlayerStatus.MaxHp : playerUnit.data.maxHp;
 
-       if (playerUnit != null)
-       {
-            TopDownCharacterController[] moveScripts = FindObjectsOfType<TopDownCharacterController>();
-            foreach (var script in moveScripts)
+        if (playerNameText != null) playerNameText.text = playerUnit.data.unitName;
+        if (playerHPText != null) playerHPText.text = $"HP {playerUnit.currentHp} / {maxHp}";
+
+        if (hpSlider != null)
+        {
+            hpSlider.maxValue = maxHp;
+            hpSlider.value = playerUnit.currentHp;
+
+            Image fillImage = hpSlider.fillRect.GetComponent<Image>();
+            if (fillImage != null)
             {
-                script.enabled = false;
-                if (script.TryGetComponent<Rigidbody2D>(out var rb))
-                {
-                    rb.linearVelocity = Vector2.zero;
-                }
-                if (script.TryGetComponent<Animator>(out var anim))
-                {
-                    anim.SetBool("IsMoving", false);
-                }
-            }
-            idou[] encounterScripts = FindObjectsOfType<idou>();
-            foreach (var script in encounterScripts)
-            {
-                script.enabled = false;
+                float hpPercent = (float)playerUnit.currentHp / maxHp;
+                if (hpPercent <= 0.2f) fillImage.color = Color.red;
+                else if (hpPercent <= 0.5f) fillImage.color = Color.yellow;
+                else fillImage.color = Color.green;
             }
         }
-        StartCoroutine(SetupBattle());
     }
+
     void PlayerTurn()
     {
         state = BattleState.PlayerTurn;
-        playerUnit.isDefending = false;
-        commandPanel.SetActive(true);
-        selectionArrow.gameObject.SetActive(true);
-        state = BattleState.PlayerTurn;
-        selectedEnemyIndex = 0;
+        if (playerUnit != null) playerUnit.isDefending = false;
+
+        if (commandPanel != null) commandPanel.SetActive(true);
+        if (selectionArrow != null) selectionArrow.gameObject.SetActive(true);
+
+        if (selectedEnemyIndex >= activeEnemies.Count) selectedEnemyIndex = 0;
         UpdateArrow();
         Debug.Log("どうする？");
     }
 
     void Update()
     {
+        if (hpSlider != null && playerUnit != null)
+        {
+            hpSlider.value = Mathf.Lerp(hpSlider.value, playerUnit.currentHp, Time.deltaTime * 5f);
+        }
+
         if (state != BattleState.PlayerTurn) return;
+
         if (Input.GetKeyDown(KeyCode.RightArrow)) { ChangeTarget(1); }
         if (Input.GetKeyDown(KeyCode.LeftArrow)) { ChangeTarget(-1); }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (commandPanel != null) commandPanel.SetActive(false);
+            if (selectionArrow != null) selectionArrow.gameObject.SetActive(false);
             StartCoroutine(PlayerAttack());
-        }
-        if (hpSlider != null)
-        {
-            hpSlider.value = Mathf.Lerp(hpSlider.value, playerUnit.currentHp, Time.deltaTime * 5f);
         }
     }
 
     void ChangeTarget(int direction)
     {
+        if (activeEnemies.Count == 0) return;
         selectedEnemyIndex = (selectedEnemyIndex + direction + activeEnemies.Count) % activeEnemies.Count;
         UpdateArrow();
     }
 
     void UpdateArrow()
     {
+        if (activeEnemies.Count == 0 || selectedEnemyIndex >= activeEnemies.Count) return;
+        if (selectionArrow == null) return;
+
         selectionArrow.gameObject.SetActive(true);
-        selectionArrow.position = activeEnemies[selectedEnemyIndex].transform.position + new Vector3(0, 150, 0);
+        selectionArrow.position = activeEnemies[selectedEnemyIndex].transform.position + new Vector3(0, 1.5f, 0);
     }
 
     IEnumerator PlayerAttack()
     {
         state = BattleState.Busy;
-        selectionArrow.gameObject.SetActive(false);
-        commandPanel.SetActive(false);
+        if (selectionArrow != null) selectionArrow.gameObject.SetActive(false);
+        if (commandPanel != null) commandPanel.SetActive(false);
 
         BattleUnit target = activeEnemies[selectedEnemyIndex];
         Debug.Log($"{playerUnit.data.unitName}の攻撃！");
-        target.TakeDamage(playerUnit.data.attack);
+
+        int currentAtk = (fieldPlayerStatus != null) ? fieldPlayerStatus.Attack : playerUnit.data.attack;
+        target.TakeDamage(currentAtk);
 
         yield return new WaitForSeconds(1f);
-
 
         if (target.isDead)
         {
             Debug.Log($"{target.data.unitName}を たおした！");
-            Destroy(target.gameObject);
+            if (target.data != null)
+            {
+                totalExpGained += target.data.exp;
+            }
             activeEnemies.Remove(target);
-            totalExpGained += target.data.exp;
+            Destroy(target.gameObject);
         }
 
         if (activeEnemies.Count <= 0)
-        { 
+        {
             state = BattleState.Win;
-
-            Debug.Log($"ta\\戦いに勝利した！合計 {totalExpGained} EXP 獲得！");
+            Debug.Log($"戦いに勝利した！合計 {totalExpGained} EXP 獲得！");
 
             if (fieldPlayerStatus != null)
             {
+                int prevLevel = fieldPlayerStatus.level;
                 fieldPlayerStatus.GainExp(totalExpGained);
-            }
-            else
-            {
-                Debug.LogWarning("fieldPlayerStatus が BattleManager に設定されていません！");
+
+                if (fieldPlayerStatus.level == prevLevel)
+                {
+                    fieldPlayerStatus.currentHp = Mathf.Clamp(playerUnit.currentHp, 0, fieldPlayerStatus.MaxHp);
+                }
             }
 
             yield return new WaitForSeconds(1.5f);
             EndBattle();
         }
-        else { StartCoroutine(EnemyAttack()); }
+        else
+        {
+            if (selectedEnemyIndex >= activeEnemies.Count) selectedEnemyIndex = Mathf.Max(0, activeEnemies.Count - 1);
+            StartCoroutine(EnemyAttack());
+        }
     }
 
     IEnumerator EnemyAttack()
@@ -203,6 +277,8 @@ public FieldUIManager fieldUIManager;
         state = BattleState.EnemyTurn;
         foreach (var enemy in activeEnemies)
         {
+            if (enemy == null || enemy.isDead) continue;
+
             Debug.Log($"{enemy.data.unitName}の攻撃！");
             playerUnit.TakeDamage(enemy.data.attack);
             UpdatePlayerUI();
@@ -213,12 +289,12 @@ public FieldUIManager fieldUIManager;
         if (playerUnit.isDead) { state = BattleState.Lose; Debug.Log("全滅した..."); }
         else { PlayerTurn(); }
     }
-    
+
     public void OnAttackButton()
     {
         if (state != BattleState.PlayerTurn) return;
-        commandPanel.SetActive(false);
-        selectionArrow.gameObject.SetActive(false);
+        if (commandPanel != null) commandPanel.SetActive(false);
+        if (selectionArrow != null) selectionArrow.gameObject.SetActive(false);
         StartCoroutine(PlayerAttack());
     }
 
@@ -237,7 +313,7 @@ public FieldUIManager fieldUIManager;
     IEnumerator PlayerDefend()
     {
         state = BattleState.Busy;
-        commandPanel.SetActive(false); 
+        if (commandPanel != null) commandPanel.SetActive(false);
         playerUnit.isDefending = true;
         Debug.Log($"{playerUnit.data.unitName}は 身をまもっている！");
         yield return new WaitForSeconds(1f);
@@ -250,7 +326,7 @@ public FieldUIManager fieldUIManager;
         Debug.Log("逃げ出した！");
         yield return new WaitForSeconds(1f);
 
-        if (Random.value > 0.5f) 
+        if (Random.value > 0.5f)
         {
             Debug.Log("逃げれた");
             EndBattle();
@@ -261,52 +337,41 @@ public FieldUIManager fieldUIManager;
             StartCoroutine(EnemyAttack());
         }
     }
+
     public void EndBattle()
     {
-        if (fieldPlayerStatus != null && playerUnit != null)
-        {
-            fieldPlayerStatus.currentHp = playerUnit.currentHp;
-        }
-        battleUI.SetActive(false);
-        if (playerUnit != null)
-        {
-            Playerstatus status = playerUnit.GetComponent<Playerstatus>();
-            if (status != null) status.currentHp = playerUnit.currentHp;
-        }
-        battleUI.SetActive(false);
-        TopDownCharacterController[] moveScripts = FindObjectsOfType<TopDownCharacterController>();
+        if (battleUI != null) battleUI.SetActive(false);
+
+        TopDownCharacterController[] moveScripts = Object.FindObjectsByType<TopDownCharacterController>(FindObjectsSortMode.None);
         foreach (var script in moveScripts)
         {
-            script.enabled = true;
+            if (script != null) script.enabled = true;
         }
 
-        idou[] encounterScripts = FindObjectsOfType<idou>();
+        idou[] encounterScripts = Object.FindObjectsByType<idou>(FindObjectsSortMode.None);
         foreach (var script in encounterScripts)
         {
-            script.enabled = true;
-            script.WarpReset();
+            if (script != null)
+            {
+                script.enabled = true;
+                script.WarpReset();
+            }
         }
+
         foreach (var enemy in activeEnemies)
         {
             if (enemy != null) Destroy(enemy.gameObject);
         }
         activeEnemies.Clear();
-        if (playerUnit != null)
-        {
-            var moveScript = playerUnit.GetComponent<TopDownCharacterController>();
-            var idouScript = playerUnit.GetComponent<idou>();
 
-            if (moveScript != null) moveScript.enabled = true;
-            if (idouScript != null)
-            {
-                idouScript.enabled = true;
-                idouScript.WarpReset(); 
-            }
-        }
-        FieldUIManager fieldUI = FindObjectOfType<FieldUIManager>();
-        if (fieldUI != null)
+        if (fieldUIManager != null)
         {
-            fieldUI.UpdateFieldUI();
+            fieldUIManager.UpdateFieldUI();
+        }
+        else
+        {
+            FieldUIManager fieldUI = Object.FindFirstObjectByType<FieldUIManager>();
+            if (fieldUI != null) fieldUI.UpdateFieldUI();
         }
     }
 }

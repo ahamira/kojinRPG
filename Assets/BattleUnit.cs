@@ -19,15 +19,10 @@ public class BattleUnit : MonoBehaviour
 
         isDead = false;
 
-        {
-            return;
-        }
-
         Playerstatus status = GetComponent<Playerstatus>();
-
         if (status != null)
         {
-            currentHp = status.currentHp;
+            currentHp = Mathf.Clamp(status.currentHp, 0, status.MaxHp);
         }
         else if (data != null)
         {
@@ -37,6 +32,13 @@ public class BattleUnit : MonoBehaviour
 
     public void TakeDamage(int attackerAtk)
     {
+        int targetDef = (data != null) ? data.defense : 0;
+
+        Playerstatus status = GetComponent<Playerstatus>();
+        if (status != null)
+        {
+            targetDef = status.Defense; 
+        }
         int damage = (attackerAtk / 2) - (data.defense / 4);
         if (isDefending)
         {

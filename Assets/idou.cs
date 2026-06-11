@@ -3,7 +3,7 @@ using UnityEngine;
 public class idou : MonoBehaviour
 {
     [Header("エンカウントするまでの必要歩数（距離）")]
-    public float encounterThreshold = 5f; 
+    public float encounterThreshold = 5f;
     private float currentEncounterMeter = 0f;
 
     private Vector3 lastPosition;
@@ -13,7 +13,15 @@ public class idou : MonoBehaviour
 
     void Start()
     {
-        battleManager = FindObjectOfType<BattleManager>();
+        FieldUIManager fieldUI = Object.FindFirstObjectByType<FieldUIManager>();
+
+        battleManager = Object.FindFirstObjectByType<BattleManager>();
+
+        if (battleManager == null)
+        {
+            Debug.LogError("シーン内に BattleManager が見つかりません！ヒエラルキーに配置されているか確認してください。");
+        }
+
         lastPosition = transform.position;
     }
 
@@ -26,7 +34,7 @@ public class idou : MonoBehaviour
     {
         if (!canEncounter) return;
 
-        if (battleManager != null && battleManager.battleUI.activeSelf)
+        if (battleManager != null && battleManager.battleUI != null && battleManager.battleUI.activeSelf)
         {
             return;
         }
