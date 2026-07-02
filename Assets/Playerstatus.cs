@@ -14,7 +14,6 @@ public class Playerstatus : MonoBehaviour
     private int bonusAtk = 0;
     private int bonusDef = 0;
 
-    // プロパティ：基本値 ＋ 成長ボーナス
     public int MaxHp => (playerData != null) ? playerData.maxHp + bonusHp : 0;
     public int Attack => (playerData != null) ? playerData.attack + bonusAtk : 0;
     public int Defense => (playerData != null) ? playerData.defense + bonusDef : 0;

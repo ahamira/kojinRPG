@@ -5,12 +5,18 @@ public class BattleUnit : MonoBehaviour
     public GameObject damageTextPrefab;
     public UnitData data;
     private Image unitImage;
+    [HideInInspector] public int maxHp;
+    [HideInInspector] public int attack;
+    [HideInInspector] public int defense;
     [HideInInspector] public int currentHp;
     [HideInInspector] public bool isDead = false;
     public bool isDefending = false;
+    public bool isPlayer;
+
     public void Setup()
     {
         if (unitImage == null) unitImage = GetComponent<Image>();
+
         if (unitImage != null && data != null)
         {
             unitImage.sprite = data.visual;
@@ -19,14 +25,12 @@ public class BattleUnit : MonoBehaviour
 
         isDead = false;
 
-        Playerstatus status = GetComponent<Playerstatus>();
-        if (status != null)
+        if (!isPlayer && data != null)
         {
-            currentHp = Mathf.Clamp(status.currentHp, 0, status.MaxHp);
-        }
-        else if (data != null)
-        {
-            currentHp = data.maxHp;
+            maxHp = data.maxHp;
+            attack = data.attack;
+            defense = data.defense;
+            currentHp = maxHp;
         }
     }
 

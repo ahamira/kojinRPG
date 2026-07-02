@@ -21,8 +21,8 @@ public class BattleManager : MonoBehaviour
     public BattleState state;
 
     [Header("参加者")]
-    public Playerstatus fieldPlayerStatus; // 本体のセーブデータ
-    public BattleUnit playerUnit;          // バトル用の臨時の体
+    public Playerstatus fieldPlayerStatus; 
+    public BattleUnit playerUnit;          
     public GameObject enemyPrefab;
 
     [Header("出現可能な敵のリスト")]
@@ -47,28 +47,23 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         state = BattleState.Start;
-        if (battleUI != null) battleUI.SetActive(false); // 最初はバトルUIを確実に隠す
+        if (battleUI != null) battleUI.SetActive(false); 
     }
 
-    // 敵と遭遇した（すべての起点の処理）
     public void EncounterEnemy()
     {
-        // ★まず真っ先にUIを表示する（これで行き倒れを防ぐ）
         if (battleUI != null) battleUI.SetActive(true);
 
-        // 【大修正】エラーで処理が止まらないよう、1つずつ安全にコンポーネントをチェック
         TopDownCharacterController[] moveScripts = Object.FindObjectsByType<TopDownCharacterController>(FindObjectsSortMode.None);
         foreach (var script in moveScripts)
         {
             if (script == null) continue;
             script.enabled = false;
 
-            // Rigidbody2Dが本当に付いているか確認してから速度をゼロにする
             if (script.TryGetComponent<Rigidbody2D>(out var rb))
             {
                 rb.linearVelocity = Vector2.zero;
             }
-            // Animatorが本当に付いているか確認してからアニメーションを止める
             if (script.TryGetComponent<Animator>(out var anim))
             {
                 anim.SetBool("IsMoving", false);
@@ -81,7 +76,6 @@ public class BattleManager : MonoBehaviour
             if (script != null) script.enabled = false;
         }
 
-        // 安全にバトル生成コルーチンを開始
         StartCoroutine(SetupBattle());
     }
 
@@ -90,7 +84,6 @@ public class BattleManager : MonoBehaviour
         totalExpGained = 0;
         selectedEnemyIndex = 0;
 
-        // 前回の敵の残骸を安全に削除
         if (activeEnemies != null && activeEnemies.Count > 0)
         {
             for (int i = activeEnemies.Count - 1; i >= 0; i--)
@@ -102,17 +95,17 @@ public class BattleManager : MonoBehaviour
             }
             activeEnemies.Clear();
         }
-
-        // バトル開始時に本体のHPをバトルの体にコピー
         if (fieldPlayerStatus != null && playerUnit != null)
         {
+            playerUnit.Setup();
+
+            playerUnit.maxHp = fieldPlayerStatus.MaxHp;
+            playerUnit.attack = fieldPlayerStatus.Attack;
+            playerUnit.defense = fieldPlayerStatus.Defense;
             playerUnit.currentHp = fieldPlayerStatus.currentHp;
         }
-
-        if (playerUnit != null) playerUnit.Setup();
         UpdatePlayerUI();
 
-        // 敵のランダム生成
         if (enemyPrefab != null && enemyDatas != null && enemyDatas.Count > 0)
         {
             int count = Random.Range(1, 4);
@@ -141,7 +134,6 @@ public class BattleManager : MonoBehaviour
             Debug.LogError("BattleManagerの EnemyPrefab または EnemyDatas がインスペクターで空っぽです！");
         }
 
-        // ★これでログもUIも絶対に止まらずに動きます！
         Debug.Log("魔物たちが あらわれた！");
         yield return new WaitForSeconds(1f);
         PlayerTurn();
