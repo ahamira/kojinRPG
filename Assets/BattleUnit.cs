@@ -1,17 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 public class BattleUnit : MonoBehaviour
 {
     public GameObject damageTextPrefab;
     public UnitData data;
     private Image unitImage;
+
+    [HideInInspector] public int currentHp;
     [HideInInspector] public int maxHp;
     [HideInInspector] public int attack;
     [HideInInspector] public int defense;
-    [HideInInspector] public int currentHp;
+
     [HideInInspector] public bool isDead = false;
     public bool isDefending = false;
-    public bool isPlayer;
 
     public void Setup()
     {
@@ -25,7 +27,7 @@ public class BattleUnit : MonoBehaviour
 
         isDead = false;
 
-        if (!isPlayer && data != null)
+        if (data != null)
         {
             maxHp = data.maxHp;
             attack = data.attack;
@@ -36,35 +38,36 @@ public class BattleUnit : MonoBehaviour
 
     public void TakeDamage(int attackerAtk)
     {
-        int targetDef = (data != null) ? data.defense : 0;
+        int damage = (attackerAtk / 2) - (defense / 4);
 
-        Playerstatus status = GetComponent<Playerstatus>();
-        if (status != null)
-        {
-            targetDef = status.Defense; 
-        }
-        int damage = (attackerAtk / 2) - (data.defense / 4);
         if (isDefending)
         {
             damage /= 2;
         }
+
         if (damage <= 0) damage = 1;
 
         currentHp -= damage;
 
         if (damageTextPrefab != null)
         {
-            GameObject popup = Instantiate(damageTextPrefab, transform.position, Quaternion.identity, transform.parent.parent);
+            GameObject popup = Instantiate(
+                damageTextPrefab,
+                transform.position,
+                Quaternion.identity,
+                transform.parent.parent
+            );
+
             if (popup.TryGetComponent<DamagePopup>(out var popupScript))
             {
                 popupScript.Setup(damage);
             }
         }
+
         if (currentHp <= 0)
         {
             currentHp = 0;
             isDead = true;
         }
-
     }
 }

@@ -14,14 +14,7 @@ public class idou : MonoBehaviour
     void Start()
     {
         FieldUIManager fieldUI = Object.FindFirstObjectByType<FieldUIManager>();
-
         battleManager = Object.FindFirstObjectByType<BattleManager>();
-
-        if (battleManager == null)
-        {
-            Debug.LogError("シーン内に BattleManager が見つかりません！ヒエラルキーに配置されているか確認してください。");
-        }
-
         lastPosition = transform.position;
     }
 
@@ -35,15 +28,13 @@ public class idou : MonoBehaviour
         if (!canEncounter) return;
 
         if (battleManager != null && battleManager.battleUI != null && battleManager.battleUI.activeSelf)
-        {
             return;
-        }
 
         float distanceMoved = Vector3.Distance(transform.position, lastPosition);
 
-        if (distanceMoved > 0)
+        if (distanceMoved > 0.01f)
         {
-            currentEncounterMeter += distanceMoved * Random.Range(0.5f, 1.5f);
+            currentEncounterMeter += distanceMoved;
             lastPosition = transform.position;
         }
 
@@ -61,6 +52,7 @@ public class idou : MonoBehaviour
             battleManager.EncounterEnemy();
         }
     }
+
 
     void OnDisable()
     {
