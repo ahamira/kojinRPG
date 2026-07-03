@@ -3,14 +3,30 @@ using TMPro;
 
 public class DamagePopup : MonoBehaviour
 {
+    [SerializeField] private TMP_Text text;
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float lifeTime = 0.4f;
+
+    private float timer;
+
     public void Setup(int damage)
     {
-        GetComponent<TMP_Text>().text = damage.ToString();
-        Destroy(gameObject, 0.4f); 
+        if (text == null)
+            text = GetComponent<TMP_Text>();
+
+        text.text = damage.ToString();
+
+        timer = lifeTime;
     }
 
     void Update()
     {
-        transform.position += new Vector3(0, 0.3f, 0);
+        transform.position += Vector3.up * moveSpeed * Time.deltaTime;
+
+        timer -= Time.deltaTime;
+        if (timer <= 0f)
+        {
+            Destroy(gameObject);
+        }
     }
 }

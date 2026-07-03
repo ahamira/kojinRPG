@@ -60,6 +60,15 @@ public class Playerstatus : MonoBehaviour
         }
     }
 
+    public void HealFull()
+    {
+        currentHp = MaxHp;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHp = Mathf.Max(0, currentHp - damage);
+    }
     void LevelUp()
     {
         level++;

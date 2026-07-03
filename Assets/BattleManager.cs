@@ -49,7 +49,10 @@ public class BattleManager : MonoBehaviour
         state = BattleState.Start;
         if (battleUI != null) battleUI.SetActive(false); 
     }
-
+    public void RefreshPlayerUI()
+    {
+        UpdatePlayerUI();
+    }
     public void EncounterEnemy()
     {
         if (battleUI != null) battleUI.SetActive(true);
@@ -97,12 +100,7 @@ public class BattleManager : MonoBehaviour
         }
         if (fieldPlayerStatus != null && playerUnit != null)
         {
-            playerUnit.Setup();
-
-            playerUnit.maxHp = fieldPlayerStatus.MaxHp;
-            playerUnit.attack = fieldPlayerStatus.Attack;
-            playerUnit.defense = fieldPlayerStatus.Defense;
-            playerUnit.currentHp = fieldPlayerStatus.currentHp;
+            playerUnit.Setup(fieldPlayerStatus);
         }
         UpdatePlayerUI();
 
@@ -122,18 +120,12 @@ public class BattleManager : MonoBehaviour
                 if (unit != null)
                 {
                     int randomIndex = Random.Range(0, enemyDatas.Count);
-                    unit.data = enemyDatas[randomIndex];
-                    unit.Setup();
+                    unit.SetupEnemy(enemyDatas[randomIndex]);
                     activeEnemies.Add(unit);
-                    unit.gameObject.name = unit.data.unitName + " " + (char)('A' + i);
+                    unit.gameObject.name = enemyDatas[randomIndex].unitName + " " + (char)('A' + i);
                 }
             }
         }
-        else
-        {
-            Debug.LogError("BattleManagerの EnemyPrefab または EnemyDatas がインスペクターで空っぽです！");
-        }
-
         Debug.Log("魔物たちが あらわれた！");
         yield return new WaitForSeconds(1f);
         PlayerTurn();

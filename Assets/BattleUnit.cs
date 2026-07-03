@@ -15,9 +15,10 @@ public class BattleUnit : MonoBehaviour
     [HideInInspector] public bool isDead = false;
     public bool isDefending = false;
 
-    public void Setup()
+    public void Setup(Playerstatus status)
     {
-        if (unitImage == null) unitImage = GetComponent<Image>();
+        if (unitImage == null)
+            unitImage = GetComponent<Image>();
 
         if (unitImage != null && data != null)
         {
@@ -25,15 +26,15 @@ public class BattleUnit : MonoBehaviour
             unitImage.SetNativeSize();
         }
 
-        isDead = false;
-
-        if (data != null)
+        if (status != null)
         {
-            maxHp = data.maxHp;
-            attack = data.attack;
-            defense = data.defense;
-            currentHp = maxHp;
+            maxHp = status.MaxHp;
+            attack = status.Attack;
+            defense = status.Defense;
+            currentHp = status.currentHp;
         }
+
+        isDead = false;
     }
 
     public void TakeDamage(int attackerAtk)
@@ -41,33 +42,35 @@ public class BattleUnit : MonoBehaviour
         int damage = (attackerAtk / 2) - (defense / 4);
 
         if (isDefending)
-        {
             damage /= 2;
-        }
 
-        if (damage <= 0) damage = 1;
+        damage = Mathf.Max(1, damage);
 
         currentHp -= damage;
-
-        if (damageTextPrefab != null)
-        {
-            GameObject popup = Instantiate(
-                damageTextPrefab,
-                transform.position,
-                Quaternion.identity,
-                transform.parent.parent
-            );
-
-            if (popup.TryGetComponent<DamagePopup>(out var popupScript))
-            {
-                popupScript.Setup(damage);
-            }
-        }
 
         if (currentHp <= 0)
         {
             currentHp = 0;
             isDead = true;
         }
+    }
+    public void SetupEnemy(UnitData enemyData)
+    {
+        data = enemyData;
+
+        if (unitImage == null)
+            unitImage = GetComponent<Image>();
+
+        if (unitImage != null)
+        {
+            unitImage.sprite = data.visual;
+            unitImage.SetNativeSize();
+        }
+
+        maxHp = data.maxHp;
+        attack = data.attack;
+        defense = data.defense;
+        currentHp = maxHp;
+        isDead = false;
     }
 }
