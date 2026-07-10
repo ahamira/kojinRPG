@@ -257,6 +257,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 551b14936ba57ea4d9628052da8abfb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBossBattle: 0
+  bossData: {fileID: 0}
   playerNameText: {fileID: 1977842248}
   playerHPText: {fileID: 2091243832}
   hpSlider: {fileID: 1529944855}
@@ -5794,6 +5796,52 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1754593372}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1008538127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1008538129}
+  - component: {fileID: 1008538128}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1008538128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008538127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a416c0fbd1e48a4469c8bf90282e55eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossTrigger
+  battleManager: {fileID: 14400745}
+  bossData: {fileID: 11400000, guid: a66a7c447c2170040b0e8428f4231079, type: 2}
+--- !u!4 &1008538129
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008538127}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -41.5516, y: -17.48239, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1035411129 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7947911505737750448, guid: d730038d263986f4dac93230e1dd62b0,
@@ -18243,3 +18291,4 @@ SceneRoots:
   - {fileID: 1574091311}
   - {fileID: 2001587345}
   - {fileID: 1362543995}
+  - {fileID: 1008538129}
