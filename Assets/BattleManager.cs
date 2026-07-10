@@ -10,6 +10,8 @@ public enum BattleState { Start, PlayerTurn, EnemyTurn, Win, Lose, Busy }
 public class BattleManager : MonoBehaviour
 {
     private int totalExpGained = 0;
+    public bool isBossBattle = false;
+    public UnitData bossData;
 
     [Header("Player UI")]
     public TextMeshProUGUI playerNameText;
