@@ -45,6 +45,7 @@ public class BattleUnit : MonoBehaviour
             damage /= 2;
 
         damage = Mathf.Max(1, damage);
+        ShowDamagePopup(damage);
 
         currentHp -= damage;
 
@@ -72,5 +73,23 @@ public class BattleUnit : MonoBehaviour
         defense = data.defense;
         currentHp = maxHp;
         isDead = false;
+    }
+    void ShowDamagePopup(int damage)
+    {
+        if (damageTextPrefab == null) return;
+
+        GameObject popup = Instantiate(
+            damageTextPrefab,
+            transform.position,
+            Quaternion.identity
+        );
+
+        DamagePopup damagePopup =
+            popup.GetComponent<DamagePopup>();
+
+        if (damagePopup != null)
+        {
+            damagePopup.Setup(damage);
+        }
     }
 }

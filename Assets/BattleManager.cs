@@ -373,7 +373,8 @@ public class BattleManager : MonoBehaviour
             if (enemy != null) Destroy(enemy.gameObject);
         }
         activeEnemies.Clear();
-
+        isBossBattle = false;
+        bossData = null;
         if (fieldUIManager != null)
         {
             fieldUIManager.UpdateFieldUI();
