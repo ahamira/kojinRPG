@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6037783843997519743}
   - component: {fileID: 8882100162392473140}
   - component: {fileID: 5312446905625775983}
-  - component: {fileID: 1021893391077300080}
   - component: {fileID: 8688914370440284191}
+  - component: {fileID: 1021893391077300080}
   m_Layer: 5
   m_Name: DamageText
   m_TagString: Untagged
@@ -139,20 +139,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &1021893391077300080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345502754910724058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 2
-  m_VerticalFit: 2
 --- !u!114 &8688914370440284191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,3 +154,17 @@ MonoBehaviour:
   text: {fileID: 5312446905625775983}
   moveSpeed: 2
   lifeTime: 0.4
+--- !u!114 &1021893391077300080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345502754910724058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
