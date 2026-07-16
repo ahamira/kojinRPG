@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: boss
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: 
-  visual: {fileID: -1536535379, guid: 7a0997fe89a878d4aa61f2126c94002a, type: 3}
+  visual: {fileID: 736821032, guid: f4d270c6c49ebdf4aa1c3b2c749c185a, type: 3}
   maxHp: 60
   attack: 18
   defense: 16
