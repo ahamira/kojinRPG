@@ -106,9 +106,28 @@ public class BattleManager : MonoBehaviour
         }
         UpdatePlayerUI();
 
-        if (enemyPrefab != null && enemyDatas != null && enemyDatas.Count > 0)
+        if (isBossBattle && bossData != null)
+        {
+            GameObject obj = Instantiate(enemyPrefab, enemyField);
+
+            if (spawnPoints != null && spawnPoints.Length > 0)
+            {
+                obj.transform.position = spawnPoints[0].position;
+            }
+
+            BattleUnit unit = obj.GetComponent<BattleUnit>();
+
+            if (unit != null)
+            {
+                unit.SetupEnemy(bossData);
+                activeEnemies.Add(unit);
+                unit.gameObject.name = bossData.unitName;
+            }
+        }
+        else if (enemyPrefab != null && enemyDatas != null && enemyDatas.Count > 0)
         {
             int count = Random.Range(1, 4);
+
             for (int i = 0; i < count; i++)
             {
                 GameObject obj = Instantiate(enemyPrefab, enemyField);
@@ -119,15 +138,20 @@ public class BattleManager : MonoBehaviour
                 }
 
                 BattleUnit unit = obj.GetComponent<BattleUnit>();
+
                 if (unit != null)
                 {
                     int randomIndex = Random.Range(0, enemyDatas.Count);
+
                     unit.SetupEnemy(enemyDatas[randomIndex]);
+
                     activeEnemies.Add(unit);
-                    unit.gameObject.name = enemyDatas[randomIndex].unitName + " " + (char)('A' + i);
+
+                    unit.gameObject.name =
+                        enemyDatas[randomIndex].unitName + " " + (char)('A' + i);
                 }
             }
-        }
+    }
         Debug.Log("ñÇï®ÇΩÇøÇ™ Ç†ÇÁÇÌÇÍÇΩÅI");
         yield return new WaitForSeconds(1f);
         PlayerTurn();
