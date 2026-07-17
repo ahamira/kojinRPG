@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 5312446905625775983}
-  moveSpeed: 2
-  lifeTime: 0.4
+  moveSpeed: 25
+  lifeTime: 0.45
 --- !u!114 &1021893391077300080
 MonoBehaviour:
   m_ObjectHideFlags: 0

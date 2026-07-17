@@ -4,7 +4,7 @@ using TMPro;
 public class DamagePopup : MonoBehaviour
 {
     [SerializeField] private TMP_Text text;
-    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float moveSpeed = 150f;
     [SerializeField] private float lifeTime = 0.4f;
 
     private float timer;

@@ -83,7 +83,7 @@ public class BattleUnit : MonoBehaviour
             transform
         );
 
-        popup.transform.localPosition = Vector3.up * 50f;
+        popup.transform.localPosition = Vector3.up * 80f;
 
         DamagePopup dp = popup.GetComponent<DamagePopup>();
 
