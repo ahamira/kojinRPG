@@ -80,16 +80,14 @@ public class BattleUnit : MonoBehaviour
 
         GameObject popup = Instantiate(
             damageTextPrefab,
-            transform.position,
-            Quaternion.identity
+            transform
         );
 
-        DamagePopup damagePopup =
-            popup.GetComponent<DamagePopup>();
+        popup.transform.localPosition = Vector3.up * 50f;
 
-        if (damagePopup != null)
-        {
-            damagePopup.Setup(damage);
-        }
+        DamagePopup dp = popup.GetComponent<DamagePopup>();
+
+        if (dp != null)
+            dp.Setup(damage);
     }
 }
