@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e524cfea5b35bdf42a8d702c989a7a28, type: 3}
-  m_Name: YO
+  m_Name: tori
   m_EditorClassIdentifier: 
-  unitName: 
+  unitName: tori
   visual: {fileID: -623676149, guid: 56c2ec3074b42e144a0cab83ade65363, type: 3}
   maxHp: 8
   attack: 3
   defense: 1
-  exp: 20
+  exp: 4
   unitSprite: {fileID: 0}

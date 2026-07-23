@@ -37,7 +37,6 @@ public class BattleManager : MonoBehaviour
 
     private List<BattleUnit> activeEnemies = new List<BattleUnit>();
     private int selectedEnemyIndex = 0;
-    public List<UnitData> possibleEnemies;
     public GameObject battleUI;
 
     [Header("UI Groups")]

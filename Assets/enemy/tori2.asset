@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e524cfea5b35bdf42a8d702c989a7a28, type: 3}
+  m_Name: tori2
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: tori2
+  visual: {fileID: -1783008647, guid: 7ff60c0b764787c4d9cb379c2535c5ea, type: 3}
+  maxHp: 25
+  attack: 17
+  defense: 12
+  exp: 24
+  unitSprite: {fileID: 0}

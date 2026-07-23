@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   unitName: yuu
   visual: {fileID: 0}
-  maxHp: 50
-  attack: 40
+  maxHp: 40
+  attack: 30
   defense: 3
   exp: 0
   unitSprite: {fileID: 0}

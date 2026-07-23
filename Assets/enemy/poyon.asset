@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e524cfea5b35bdf42a8d702c989a7a28, type: 3}
-  m_Name: boss
-  m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: 
-  visual: {fileID: 736821032, guid: f4d270c6c49ebdf4aa1c3b2c749c185a, type: 3}
-  maxHp: 100
-  attack: 30
-  defense: 20
-  exp: 200
+  m_Name: poyon
+  m_EditorClassIdentifier: 
+  unitName: poyon
+  visual: {fileID: -1791387956, guid: 032beef69f3fab94c8892647b499d93a, type: 3}
+  maxHp: 3
+  attack: 5
+  defense: 0
+  exp: 5
   unitSprite: {fileID: 0}
