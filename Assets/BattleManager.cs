@@ -270,7 +270,16 @@ public class BattleManager : MonoBehaviour
                     fieldPlayerStatus.currentHp = Mathf.Clamp(playerUnit.currentHp, 0, fieldPlayerStatus.MaxHp);
                 }
             }
+            if (isBossBattle)
+            {
+                BossTrigger boss = FindFirstObjectByType<BossTrigger>();
 
+                if (boss != null)
+                {
+                    boss.BossDefeated();
+                }
+            }
+            
             yield return new WaitForSeconds(1.5f);
             EndBattle();
         }
