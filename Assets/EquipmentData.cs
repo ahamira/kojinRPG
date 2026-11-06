@@ -1,16 +1,13 @@
 using UnityEngine;
 
-public class EquipmentData : MonoBehaviour
+[CreateAssetMenu(fileName = "NewEquipment", menuName = "RPG/Equipment")]
+public class EquipmentData : ScriptableObject
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public string equipmentName;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Sprite icon;
+
+    public int attackBonus;
+    public int defenseBonus;
+    public int hpBonus;
 }
