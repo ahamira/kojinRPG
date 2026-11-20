@@ -1,12 +1,12 @@
-
 using UnityEngine;
+using System.Collections.Generic;
 
 public class Playerstatus : MonoBehaviour
 {
     [Header("プレイヤーのマスターデータ")]
     public PlayerData playerData;
 
-    [Header("現在のステータス（ゲーム中に変動する値）")]
+    [Header("現在のステータス")]
     public int level = 1;
     public int currentExp = 0;
     public int currentHp = 0;
@@ -18,6 +18,10 @@ public class Playerstatus : MonoBehaviour
     [Header("装備")]
     public EquipmentData equippedWeapon;
     public EquipmentData equippedArmor;
+
+    [Header("所持している装備")]
+    public List<EquipmentData> ownedWeapons = new List<EquipmentData>();
+    public List<EquipmentData> ownedArmors = new List<EquipmentData>();
 
     public int MaxHp =>
         (playerData != null ? playerData.maxHp + bonusHp : 0)
@@ -48,9 +52,7 @@ public class Playerstatus : MonoBehaviour
             return 999999;
 
         if (level < playerData.levelTable.Count)
-        {
             return playerData.levelTable[level];
-        }
 
         return 999999;
     }
@@ -76,9 +78,7 @@ public class Playerstatus : MonoBehaviour
             LevelUp();
 
             if (IsMaxLevel())
-            {
                 break;
-            }
         }
     }
 
@@ -118,5 +118,23 @@ public class Playerstatus : MonoBehaviour
     {
         equippedArmor = armor;
         Debug.Log("防具を装備：" + armor.equipmentName);
+    }
+
+    public void AddEquipment(EquipmentData equipment, bool isWeapon)
+    {
+        if (equipment == null) return;
+
+        if (isWeapon)
+        {
+            if (!ownedWeapons.Contains(equipment))
+                ownedWeapons.Add(equipment);
+        }
+        else
+        {
+            if (!ownedArmors.Contains(equipment))
+                ownedArmors.Add(equipment);
+        }
+
+        Debug.Log(equipment.equipmentName + " を入手した！");
     }
 }
