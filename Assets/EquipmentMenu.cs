@@ -48,17 +48,17 @@ public class EquipmentMenu : MonoBehaviour
     {
         if (player == null) return;
 
-        weaponText.text = "Buki：" +
+        weaponText.text = "武器：" +
             (player.equippedWeapon != null
-            ? player.equippedWeapon.equipmentName : "no");
+            ? player.equippedWeapon.equipmentName : "なし");
 
-        armorText.text = "Bougu：" +
+        armorText.text = "防具：" +
             (player.equippedArmor != null
-            ? player.equippedArmor.equipmentName : "no");
+            ? player.equippedArmor.equipmentName : "なし");
 
         statusText.text =
             "HP：" + player.currentHp + " / " + player.MaxHp +
-            "\nAttack：" + player.Attack +
-            "\nDefense：" + player.Defense;
+            "\n攻撃力：" + player.Attack +
+            "\n防御力：" + player.Defense;
     }
 }
